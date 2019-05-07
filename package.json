@@ -3,20 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/jest": "24.0.12",
-    "@types/node": "12.0.0",
-    "@types/react": "16.8.16",
-    "@types/react-dom": "16.8.4",
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.0",
     "typescript": "3.4.5"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=8080 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-server": "tsc ./server/app.ts -outDir ./server-build",
+    "start-server": "node ./server-build/app.js",
+    "dev-server": "concurrently -x -k 'yarn build-server -w' 'nodemon ./server-build/app.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,5 +33,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.12",
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.40",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.8.16",
+    "@types/react-dom": "^16.8.4",
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.19.0"
   }
 }
