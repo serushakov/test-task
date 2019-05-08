@@ -9,7 +9,18 @@ enum RequiredDescriptors {
   Depends = "Depends"
 }
 
-const packageData = {};
+interface Package {
+  dependencies?: Set<string>;
+  dependants?: Set<string>;
+  description: string;
+  version: string;
+}
+
+interface PackageData {
+  [name: string]: Partial<Package>;
+}
+
+const packageData: PackageData = {};
 
 const pathToFile = path.join(__dirname, "../", "mockdata");
 
@@ -49,13 +60,29 @@ const parseData = (readLineInterface: readline.Interface) => {
       const value = line.substring(colonLocation + 2);
 
       switch (prevKey) {
-        default:
-          break;
         case RequiredDescriptors.Package:
           currentPackage = prevValue;
           packageData[currentPackage] = {};
           break;
         case RequiredDescriptors.Depends:
+          packageData[currentPackage] = {
+            ...packageData[currentPackage],
+            dependencies: parseDependencies(prevValue)
+          };
+          break;
+        case RequiredDescriptors.Version:
+          packageData[currentPackage] = {
+            ...packageData[currentPackage],
+            version: prevValue
+          };
+          break;
+        case RequiredDescriptors.Description:
+          packageData[currentPackage] = {
+            ...packageData.currentPackage,
+            description: prevValue
+          };
+        default:
+          break;
       }
 
       prevKey = key;
@@ -69,9 +96,19 @@ const parseData = (readLineInterface: readline.Interface) => {
 };
 
 const parseDependencies = (line: string) => {
-  const deps = line.split(",");
+  const dependencies = line.split(", ").map(removeVersionFromDependency);
 
-  return deps.map(dependency => dependency.split("(")[0].trim());
+  return new Set(dependencies);
+};
+
+const removeVersionFromDependency = (dependency: string) => {
+  const [dependencyName] = dependency.split(" ");
+
+  if (dependencyName) {
+    return dependencyName.trim();
+  } else {
+    return null;
+  }
 };
 
 export { initialize };
