@@ -1,25 +1,37 @@
 import * as path from "path";
+import { debounce } from "lodash";
 import Parser from "./parser";
+import { reportMemoryUsage } from "./utils";
 import { PackageList } from "./types";
+import { watch } from "fs";
 
 const pathToFile = path.join(__dirname, "../", "mockdata");
-
-const reportMemoryUsage = () => {
-  const used = process.memoryUsage().heapUsed / 1024 / 1024;
-  console.log(
-    `The script uses approximately ${Math.round(used * 100) / 100} MB`
-  );
-};
 
 class Database {
   packageList: PackageList;
 
   initialize = async () => {
-    const parser = new Parser(pathToFile);
+    await this.parseFile();
 
-    this.packageList = await parser.getPackageList();
     reportMemoryUsage();
+    this.setupWatch();
   };
+
+  parseFile = async () => {
+    const parser = new Parser(pathToFile);
+    this.packageList = await parser.getPackageList();
+  };
+
+  setupWatch() {
+    watch(
+      pathToFile,
+      debounce(event => {
+        console.log("File was changed, reparsing...");
+
+        this.parseFile();
+      }, 100)
+    );
+  }
 
   getPackageData = (name: string) => {
     this.packageList[name];
