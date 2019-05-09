@@ -1,5 +1,6 @@
 import { Interface, createInterface } from "readline";
 import { createReadStream } from "fs";
+import * as _ from "lodash";
 import { PackageData, PackageList, RequiredDescriptors } from "./types";
 
 const KEY_VALUE_DIVIDER = ": ";
@@ -55,19 +56,21 @@ class Parser {
 
       if (!pkg.dependencies) return;
 
-      pkg.dependencies.forEach(dependency => {
-        const dependencyPackage = this.packageList[dependency];
-
-        if (!dependencyPackage) return;
-
-        if (!dependencyPackage.dependants) {
-          this.packageList[dependency].dependants = new Set();
-        }
-
-        this.packageList[dependency].dependants.add(name);
-      });
+      pkg.dependencies.forEach(this.addDependant(name));
     });
   }
+
+  private addDependant = name => dependency => {
+    const dependencyPackage = this.packageList[dependency];
+
+    if (!dependencyPackage) return;
+
+    if (!dependencyPackage.dependants) {
+      this.packageList[dependency].dependants = [];
+    }
+
+    this.packageList[dependency].dependants.push(name);
+  };
 
   private lineParser = (line: string) => {
     if (line === "") {
@@ -85,7 +88,7 @@ class Parser {
       this.prevKey = key;
       this.prevValue = value;
     } else {
-      this.prevValue += line.substring(1);
+      this.prevValue += line;
     }
   };
 
@@ -119,8 +122,7 @@ class Parser {
 
   private parseDependencies = (line: string) => {
     const dependencies = line.split(", ").map(this.removeVersionFromDependency);
-
-    return new Set(dependencies);
+    return _.uniq(dependencies);
   };
 
   private removeVersionFromDependency = (dependency: string) => {

@@ -6,8 +6,8 @@ export enum RequiredDescriptors {
 }
 
 export interface PackageData {
-  dependencies?: Set<string>;
-  dependants?: Set<string>;
+  dependencies?: Array<string>;
+  dependants?: Array<string>;
   description: string;
   version: string;
 }
