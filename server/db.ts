@@ -1,5 +1,5 @@
 import * as path from "path";
-import { debounce } from "lodash";
+import * as _ from "lodash";
 import Parser from "./parser";
 import { reportMemoryUsage } from "./utils";
 import { PackageList } from "./types";
@@ -25,7 +25,8 @@ class Database {
   setupWatch() {
     watch(
       pathToFile,
-      debounce(event => {
+      _.debounce(() => {
+        // debounce is required because this callback is triggered multiple times per file change
         console.log("File was changed, reparsing...");
 
         this.parseFile();
@@ -34,7 +35,15 @@ class Database {
   }
 
   getPackageData = (name: string) => {
-    this.packageList[name];
+    return this.packageList[name];
+  };
+
+  getAllPackages = () => {
+    return Object.keys(this.packageList);
+  };
+
+  getPackages = (offset: number, amount: number) => {
+    return this.getAllPackages().slice(offset, offset + amount);
   };
 }
 
