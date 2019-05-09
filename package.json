@@ -2,6 +2,7 @@
   "name": "reactor-test-task",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3000",
   "dependencies": {
     "koa": "^2.7.0",
     "koa-router": "^7.4.0",

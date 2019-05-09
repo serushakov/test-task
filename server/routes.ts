@@ -6,7 +6,7 @@ const router = new Router();
 const db = new Database();
 db.initialize();
 
-router.get("/packages", async (ctx, next) => {
+router.get("/api/packages", async (ctx, next) => {
   const { offset = 0, amount = 20 } = ctx.query;
 
   const parsedOffset = Number(offset);
@@ -28,7 +28,7 @@ router.get("/packages", async (ctx, next) => {
   await next();
 });
 
-router.get("/packages/:packageName", async (ctx, next) => {
+router.get("/api/packages/:packageName", async (ctx, next) => {
   const { packageName } = ctx.params;
 
   const pkg = db.getPackageData(packageName);
