@@ -40,9 +40,32 @@ class Parser {
     this.readLineInterface.on("line", this.lineParser);
 
     return new Promise(resolve => {
-      this.readLineInterface.on("close", () =>
-        resolve(this.packageList as PackageList)
-      );
+      this.readLineInterface.on("close", () => {
+        this.calculateDependants();
+        resolve(this.packageList as PackageList);
+      });
+    });
+  }
+
+  private calculateDependants() {
+    const packages = Object.keys(this.packageList);
+
+    packages.forEach(name => {
+      const pkg = this.packageList[name];
+
+      if (!pkg.dependencies) return;
+
+      pkg.dependencies.forEach(dependency => {
+        const dependencyPackage = this.packageList[dependency];
+
+        if (!dependencyPackage) return;
+
+        if (!dependencyPackage.dependants) {
+          this.packageList[dependency].dependants = new Set();
+        }
+
+        this.packageList[dependency].dependants.add(name);
+      });
     });
   }
 

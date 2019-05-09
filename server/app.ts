@@ -7,6 +7,7 @@ const app = new Koa();
 
 app.use(routes.routes());
 app.use(routes.allowedMethods());
+
 console.log(`listening on localhost:${PORT}`);
 app.on("error", e => {
   console.log(`ERROR`, e);
