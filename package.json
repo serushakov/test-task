@@ -16,9 +16,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build-server": "tsc ./server/app.ts -outDir ./server-build",
+    "build-server": "tsc --project tsconfig.node.json",
     "start-server": "node ./server-build/app.js",
-    "dev-server": "concurrently -x -k 'yarn build-server -w' 'nodemon ./server-build/app.js'"
+    "dev-server": "concurrently -x -k 'yarn build-server -w' 'nodemon ./server-build/app.js' --inspect"
   },
   "eslintConfig": {
     "extends": "react-app"
