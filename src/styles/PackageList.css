@@ -1,0 +1,28 @@
+.App-header {
+  display: flex;
+  font-weight: 500;
+  font-size: calc(10px + 2vmin);
+  margin-bottom: 16px;
+}
+
+.PackageList-list {
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e4e4e4;
+}
+
+.PackageList-package {
+  padding: 16px;
+  border-bottom: 1px soild #e4e4e4;
+  color: #000;
+}
+
+.PackageList-package:nth-child(even) {
+  background: #efefef;
+}
+
+.PackageList-package:hover,
+.PackageList-package:focus {
+  background: #e4e4e4;
+}

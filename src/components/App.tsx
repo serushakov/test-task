@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 
+import PackageList from "./PackageList";
+
 import "../styles/App.css";
 
 const App: React.FC = () => {
@@ -8,7 +10,7 @@ const App: React.FC = () => {
     <div className="App">
       <BrowserRouter>
         <Route p="/">
-          <div />
+          <PackageList />
         </Route>
       </BrowserRouter>
     </div>
