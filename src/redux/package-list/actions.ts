@@ -6,7 +6,8 @@ import {
   LoadPackagesRequestInit,
   PackageListActionTypes,
   LOAD_PACKAGES_FAILURE,
-  SET_PAGE
+  SET_PAGE,
+  SET_AMOUNT_PER_PAGE
 } from "./types";
 import { RootState } from "../types";
 import { fetchPackages } from "../../api";
@@ -43,4 +44,9 @@ export const loadPackagesRequest = (
 export const setPage = (page: number): PackageListActionTypes => ({
   type: SET_PAGE,
   payload: page
+});
+
+export const setAmountPerPage = (amount: number): PackageListActionTypes => ({
+  type: SET_AMOUNT_PER_PAGE,
+  payload: amount
 });

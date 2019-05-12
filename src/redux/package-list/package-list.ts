@@ -4,7 +4,8 @@ import {
   LOAD_PACKAGES_REQUEST,
   LOAD_PACKAGES_SUCCESS,
   LOAD_PACKAGES_FAILURE,
-  SET_PAGE
+  SET_PAGE,
+  SET_AMOUNT_PER_PAGE
 } from "./types";
 
 const initialState: PackageListState = {
@@ -12,7 +13,8 @@ const initialState: PackageListState = {
   error: null,
   isLoading: false,
   page: 1,
-  totalPackages: null
+  totalPackages: null,
+  amountPerPage: 20
 };
 
 const reducer = (
@@ -43,6 +45,11 @@ const reducer = (
       return {
         ...state,
         page: action.payload
+      };
+    case SET_AMOUNT_PER_PAGE:
+      return {
+        ...state,
+        amountPerPage: action.payload
       };
     default:
       return state;

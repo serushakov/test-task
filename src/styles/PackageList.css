@@ -32,7 +32,15 @@
 .PackageList-controls {
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
+
+.PackageList-pageInput {
+  width: 40px;
+}
+
+.PackageList-select {
+  margin-left: 4px;
 }
