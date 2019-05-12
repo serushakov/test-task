@@ -1,7 +1,9 @@
 import {
   PackageListState,
   PackageListActionTypes,
-  LOAD_PACKAGES_REQUEST
+  LOAD_PACKAGES_REQUEST,
+  LOAD_PACKAGES_SUCCESS,
+  LOAD_PACKAGES_FAILURE
 } from "./types";
 
 const initialState: PackageListState = {
@@ -20,7 +22,21 @@ const reducer = (
     case LOAD_PACKAGES_REQUEST:
       return {
         ...state,
-        isLoading: true
+        isLoading: true,
+        error: null
+      };
+    case LOAD_PACKAGES_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        packages: action.payload.packages,
+        totalPackages: action.payload.total
+      };
+    case LOAD_PACKAGES_FAILURE:
+      return {
+        ...state,
+        isLoading: false,
+        error: action.payload
       };
     default:
       return state;

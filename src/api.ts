@@ -34,10 +34,8 @@ const buildQuery = (params: { [key: string]: string | number | undefined }) => {
 export const fetchPackages = (
   offset?: number,
   amount?: number
-): Promise<GetPackagesResponse> => {
-  return fetcher(`/api/packages?${buildQuery({ offset, amount })}`);
-};
+): Promise<GetPackagesResponse> =>
+  fetcher(`/api/packages?${buildQuery({ offset, amount })}`);
 
-export const fetchPackage = (packageName: string): Promise<PackageData> => {
-  return fetcher(`/api/packages/${packageName}`).then(data => data.result);
-};
+export const fetchPackage = (packageName: string): Promise<PackageData> =>
+  fetcher(`/api/packages/${packageName}`).then(data => data.result);

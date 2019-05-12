@@ -1,24 +1,42 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+
+import { loadPackagesRequest } from "../redux/package-list/actions";
+
+import { RootState } from "../redux/types";
+import {
+  PackageListState,
+  LoadPackagesRequestInit
+} from "../redux/package-list/types";
 
 import "../styles/PackageList.css";
-import { fetchPackages } from "../api";
-import { Link } from "react-router-dom";
 
 const packageAmount = 20;
 
-const PackageList: React.FC = () => {
-  const [packages, onPackageLoad] = useState<Array<string>>([]);
-  const [packageCount, setPackageCount] = useState<number>(0);
+const mapStateToProps = (state: RootState): PackageListState => {
+  return state.packageList;
+};
+
+interface ReduxProps extends PackageListState {
+  loadPackagesRequest: (init: LoadPackagesRequestInit) => void;
+}
+
+const PackageList: React.FC<ReduxProps> = ({
+  totalPackages,
+  packages,
+  loadPackagesRequest
+}) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    fetchPackages((page - 1) * packageAmount, packageAmount).then(data => {
-      onPackageLoad(data.packages);
-      setPackageCount(data.total);
+    loadPackagesRequest({
+      offset: (page - 1) * packageAmount,
+      amount: packageAmount
     });
-  }, [page]);
+  }, [page, loadPackagesRequest]);
 
-  const totalPages = packageCount / packageAmount;
+  const totalPages = totalPackages ? totalPackages / packageAmount : 0;
 
   const renderPackageLink = (packageName: string) => {
     return (
@@ -63,4 +81,9 @@ const PackageList: React.FC = () => {
   );
 };
 
-export default PackageList;
+export default connect(
+  mapStateToProps,
+  {
+    loadPackagesRequest
+  }
+)(PackageList);
