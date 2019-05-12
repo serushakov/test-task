@@ -1,35 +1,34 @@
-import * as path from "path";
 import * as _ from "lodash";
-import Parser from "./parser";
-import { reportMemoryUsage } from "./utils";
-import { PackageList } from "./types";
 import { watch } from "fs";
+import Parser from "./parser";
+import { reportMemoryUsage, getFilePath } from "./utils";
+import { PackageList } from "../common/types";
 
-const pathToFile = path.join(__dirname, "../", "mockdata");
+const pathToFile = getFilePath();
 
 class Database {
   packageList: PackageList;
 
   initialize = async () => {
-    await this.parseFile();
+    await this.initParser();
 
     reportMemoryUsage();
     this.setupWatch();
   };
 
-  parseFile = async () => {
+  private initParser = async () => {
     const parser = new Parser(pathToFile);
     this.packageList = await parser.getPackageList();
   };
 
-  setupWatch() {
+  private setupWatch() {
     watch(
       pathToFile,
       _.debounce(() => {
         // debounce is required because this callback is triggered multiple times per file change
         console.log("File was changed, reparsing...");
 
-        this.parseFile();
+        this.initParser();
       }, 100)
     );
   }

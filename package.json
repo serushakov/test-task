@@ -20,7 +20,7 @@
     "eject": "react-scripts eject",
     "build-server": "tsc --project tsconfig.node.json",
     "start-server": "node ./server-build/app.js",
-    "dev-server": "concurrently -x -k 'yarn build-server -w' 'nodemon ./server-build/app.js' --inspect"
+    "dev-server": "concurrently -x -k 'yarn build-server -w' 'nodemon ./server-build/server/app.js mockdata'"
   },
   "eslintConfig": {
     "extends": "react-app"
