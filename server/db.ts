@@ -41,7 +41,7 @@ class Database {
     return Object.keys(this.packageList);
   };
 
-  getPackages = (offset: number, amount: number) => {
+  getPackagesWithOffset = (offset: number, amount: number) => {
     return this.getAllPackages().slice(offset, offset + amount);
   };
 }

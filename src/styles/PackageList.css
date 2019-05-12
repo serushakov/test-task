@@ -28,3 +28,11 @@
   background: #e4e4e4;
   color: #0019ff;
 }
+
+.PackageList-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 16px;
+}

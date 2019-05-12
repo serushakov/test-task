@@ -1,5 +1,6 @@
 import * as Router from "koa-router";
 import Database from "./db";
+import { GetPackagesResponse } from "../common/types";
 
 const router = new Router();
 
@@ -18,11 +19,15 @@ router.get("/api/packages", async (ctx, next) => {
       error: "Please check request parameters"
     };
   } else {
-    const packages = db.getPackages(parsedOffset, parsedAmount);
+    const packages = db.getPackagesWithOffset(parsedOffset, parsedAmount);
+    const total = db.getAllPackages().length;
 
-    ctx.body = {
-      results: packages
+    const response: GetPackagesResponse = {
+      packages,
+      total
     };
+
+    ctx.body = response;
   }
 
   await next();

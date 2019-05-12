@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { PackageData } from "../common/types";
+import { PackageData, GetPackagesResponse } from "../common/types";
 
 const commonInit: RequestInit = {
   mode: "cors"
@@ -34,10 +34,8 @@ const buildQuery = (params: { [key: string]: string | number | undefined }) => {
 export const fetchPackages = (
   offset?: number,
   amount?: number
-): Promise<Array<string>> => {
-  return fetcher(`/api/packages?${buildQuery({ offset, amount })}`).then(
-    data => data.results
-  );
+): Promise<GetPackagesResponse> => {
+  return fetcher(`/api/packages?${buildQuery({ offset, amount })}`);
 };
 
 export const fetchPackage = (packageName: string): Promise<PackageData> => {
