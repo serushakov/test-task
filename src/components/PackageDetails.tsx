@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
 import { PackageData } from "../../common/types";
 
 import { fetchPackage } from "../api";
@@ -21,39 +21,60 @@ const PackageDetails: React.FC<RouteComponentProps<RouteParams>> = ({
     fetchPackage(packageName)
       .then(setPackageData)
       .catch(setError);
-  }, []);
+    setError(null);
+  }, [packageName]);
 
-  if (error || !packageData) {
-    return <div>{error}</div>;
-  }
+  const renderPackageList = (list: Array<string>) => (
+    <ul className="PackageDetails-list">
+      {list.map(packageName => (
+        <li key={packageName}>
+          <Link to={`/package/${packageName}`}>{packageName}</Link>
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
-    <div className="PackageDetails-root">
-      <span>{packageName}</span>
-      <span>{packageData.version}</span>
-      <div className="PackageDetails-description">
-        {packageData.description}
-      </div>
-      <div>
-        <h3>Dependencies</h3>
-        <ul className="PackageDetails-list">
-          {packageData.dependencies ? (
-            packageData.dependencies.map(dep => <li>{dep}</li>)
-          ) : (
-            <span>None!</span>
-          )}
-        </ul>
-      </div>
-      <div>
-        <h3>Dependants</h3>
-        <ul className="PackageDetails-list">
-          {packageData.dependants ? (
-            packageData.dependants.map(dep => <li>{dep}</li>)
-          ) : (
-            <span>None!</span>
-          )}
-        </ul>
-      </div>
+    <div>
+      <Link to="/">&#8592; Back to package list</Link>
+      {error || !packageData ? (
+        <div className="PackageDetails-error">{error}</div>
+      ) : (
+        <div className="PackageDetails-container">
+          <div>
+            <h3>Name</h3>
+            <span>{packageName}</span>
+          </div>
+
+          <div>
+            <h3>Version</h3>
+            <span>{packageData.version}</span>
+          </div>
+
+          <div className="PackageDetails-description">
+            <h3>Description</h3>
+            {packageData.description}
+          </div>
+
+          <div>
+            <h3>Dependencies</h3>
+            {packageData.dependencies ? (
+              renderPackageList(packageData.dependencies)
+            ) : (
+              <span>None!</span>
+            )}
+          </div>
+
+          <div>
+            <h3>Dependants</h3>
+            {packageData.dependants ? (
+              renderPackageList(packageData.dependants)
+            ) : (
+              <span>None!</span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
