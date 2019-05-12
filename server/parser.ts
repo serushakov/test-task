@@ -1,7 +1,7 @@
 import { Interface, createInterface } from "readline";
 import { createReadStream } from "fs";
 import * as _ from "lodash";
-import { PackageData, PackageList, RequiredDescriptors } from "./types";
+import { PackageData, PackageList, RequiredDescriptors } from "../common/types";
 
 const KEY_VALUE_DIVIDER = ": ";
 
@@ -42,6 +42,7 @@ class Parser {
 
     return new Promise(resolve => {
       this.readLineInterface.on("close", () => {
+        this.savePreviousKeyValue();
         this.calculateDependants();
         resolve(this.packageList as PackageList);
       });
@@ -73,23 +74,27 @@ class Parser {
   };
 
   private lineParser = (line: string) => {
-    if (line === "") {
-      this.currentPackage = "";
-      return;
-    }
+    if (line === "") return;
 
     const isNewKey = !line.startsWith(" ");
 
     if (isNewKey) {
       this.savePreviousKeyValue();
-
-      const [key, value] = line.split(KEY_VALUE_DIVIDER);
+      const { key, value } = this.getKeyValue(line);
 
       this.prevKey = key;
       this.prevValue = value;
     } else {
-      this.prevValue += line;
+      this.prevValue += `${line}\n`;
     }
+  };
+
+  private getKeyValue = (line: string) => {
+    const [key, ...valueArray] = line.split(KEY_VALUE_DIVIDER);
+    return {
+      key,
+      value: valueArray.join(KEY_VALUE_DIVIDER)
+    };
   };
 
   private savePreviousKeyValue() {
@@ -112,7 +117,7 @@ class Parser {
         break;
       case RequiredDescriptors.Description:
         this.packageList[this.currentPackage] = {
-          ...this.packageList.currentPackage,
+          ...this.packageList[this.currentPackage],
           description: this.prevValue
         };
       default:
@@ -127,12 +132,7 @@ class Parser {
 
   private removeVersionFromDependency = (dependency: string) => {
     const [dependencyName] = dependency.split(" ");
-
-    if (dependencyName) {
-      return dependencyName.trim();
-    } else {
-      return null;
-    }
+    return dependencyName;
   };
 }
 
