@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { loadPackagesRequest } from "../redux/package-list/actions";
+import { loadPackagesRequest, setPage } from "../redux/package-list/actions";
 
 import { RootState } from "../redux/types";
 import {
@@ -20,15 +20,17 @@ const mapStateToProps = (state: RootState): PackageListState => {
 
 interface ReduxProps extends PackageListState {
   loadPackagesRequest: (init: LoadPackagesRequestInit) => void;
+  setPage: (page: number) => void;
 }
 
 const PackageList: React.FC<ReduxProps> = ({
   totalPackages,
   packages,
-  loadPackagesRequest
+  loadPackagesRequest,
+  page,
+  setPage,
+  isLoading
 }) => {
-  const [page, setPage] = useState(1);
-
   useEffect(() => {
     loadPackagesRequest({
       offset: (page - 1) * packageAmount,
@@ -62,6 +64,10 @@ const PackageList: React.FC<ReduxProps> = ({
     }
   };
 
+  if (isLoading && !packages) {
+    return <span>Loading...</span>;
+  }
+
   return (
     <div>
       <header className="App-header">
@@ -84,6 +90,7 @@ const PackageList: React.FC<ReduxProps> = ({
 export default connect(
   mapStateToProps,
   {
-    loadPackagesRequest
+    loadPackagesRequest,
+    setPage
   }
 )(PackageList);

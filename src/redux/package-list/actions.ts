@@ -5,7 +5,8 @@ import {
   LOAD_PACKAGES_SUCCESS,
   LoadPackagesRequestInit,
   PackageListActionTypes,
-  LOAD_PACKAGES_FAILURE
+  LOAD_PACKAGES_FAILURE,
+  SET_PAGE
 } from "./types";
 import { RootState } from "../types";
 import { fetchPackages } from "../../api";
@@ -38,3 +39,8 @@ export const loadPackagesRequest = (
     });
   }
 };
+
+export const setPage = (page: number): PackageListActionTypes => ({
+  type: SET_PAGE,
+  payload: page
+});

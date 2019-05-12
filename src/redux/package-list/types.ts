@@ -3,6 +3,7 @@ import { GetPackagesResponse } from "../../../common/types";
 export const LOAD_PACKAGES_REQUEST = "LOAD_PACKAGES_REQUEST";
 export const LOAD_PACKAGES_SUCCESS = "LOAD_PACKAGES_SUCCESS";
 export const LOAD_PACKAGES_FAILURE = "LOAD_PACKAGES_FAILURE";
+export const SET_PAGE = "SET_PAGE";
 
 export interface LoadPackagesRequestInit {
   offset: number;
@@ -24,10 +25,16 @@ interface LoadPackagesFailureAction {
   payload: string;
 }
 
+interface SetPageAction {
+  type: typeof SET_PAGE;
+  payload: number;
+}
+
 export type PackageListActionTypes =
   | LoadPackagesRequestAction
   | LoadPackagesSuccessAction
-  | LoadPackagesFailureAction;
+  | LoadPackagesFailureAction
+  | SetPageAction;
 
 export interface PackageListState {
   packages: Array<string> | null;

@@ -3,7 +3,8 @@ import {
   PackageListActionTypes,
   LOAD_PACKAGES_REQUEST,
   LOAD_PACKAGES_SUCCESS,
-  LOAD_PACKAGES_FAILURE
+  LOAD_PACKAGES_FAILURE,
+  SET_PAGE
 } from "./types";
 
 const initialState: PackageListState = {
@@ -37,6 +38,11 @@ const reducer = (
         ...state,
         isLoading: false,
         error: action.payload
+      };
+    case SET_PAGE:
+      return {
+        ...state,
+        page: action.payload
       };
     default:
       return state;
