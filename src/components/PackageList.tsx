@@ -14,7 +14,11 @@ const PackageList: React.FC = () => {
 
   const renderPackage = (packageName: string) => {
     return (
-      <Link to={`/package/${packageName}`} className="PackageList-package">
+      <Link
+        to={`/package/${packageName}`}
+        className="PackageList-package"
+        key={packageName}
+      >
         {packageName}
       </Link>
     );
