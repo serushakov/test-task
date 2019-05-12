@@ -1,8 +1,23 @@
 import _ from "lodash";
+import { PackageData } from "../common/types";
 
 const commonInit: RequestInit = {
   mode: "cors"
 };
+
+const fetcher = (path: RequestInfo, init?: RequestInit) =>
+  window
+    .fetch(path, {
+      ...commonInit,
+      ...init
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.error) {
+        return Promise.reject(data.error);
+      }
+      return data;
+    });
 
 const buildQuery = (params: { [key: string]: string | number | undefined }) => {
   return _.transform(
@@ -16,15 +31,15 @@ const buildQuery = (params: { [key: string]: string | number | undefined }) => {
   ).join("&");
 };
 
-export const fetchPackages = async (offset?: number, amount?: number) => {
-  const request = await fetch(
-    `/api/packages?${buildQuery({ offset, amount })}`,
-    commonInit
+export const fetchPackages = (
+  offset?: number,
+  amount?: number
+): Promise<Array<string>> => {
+  return fetcher(`/api/packages?${buildQuery({ offset, amount })}`).then(
+    data => data.results
   );
+};
 
-  if (request.ok) {
-    const json = await request.json();
-
-    return json.results;
-  }
+export const fetchPackage = (packageName: string): Promise<PackageData> => {
+  return fetcher(`/api/packages/${packageName}`).then(data => data.result);
 };
