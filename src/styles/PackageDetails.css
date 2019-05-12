@@ -18,6 +18,8 @@
 }
 
 .PackageDetails-description {
+  white-space: pre-wrap;
+
   grid-column-start: 1;
   grid-column-end: 3;
 }

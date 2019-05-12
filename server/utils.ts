@@ -15,3 +15,5 @@ export const getFilePath = () => {
     return path.join(__dirname, "../../", process.argv[2]);
   }
 };
+
+export const withNewLine = (string: string) => `${string}\n`;

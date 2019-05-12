@@ -2,6 +2,7 @@ import { Interface, createInterface } from "readline";
 import { createReadStream } from "fs";
 import * as _ from "lodash";
 import { PackageData, PackageList, RequiredDescriptors } from "../common/types";
+import { withNewLine } from "./utils";
 
 const KEY_VALUE_DIVIDER = ": ";
 
@@ -85,7 +86,11 @@ class Parser {
       this.prevKey = key;
       this.prevValue = value;
     } else {
-      this.prevValue += `${line}\n`;
+      if (!this.prevValue.endsWith("\n")) {
+        this.prevValue = withNewLine(this.prevValue);
+      }
+
+      this.prevValue += withNewLine(line.trim());
     }
   };
 
