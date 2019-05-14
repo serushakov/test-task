@@ -49,7 +49,8 @@ const reducer = (
     case SET_AMOUNT_PER_PAGE:
       return {
         ...state,
-        amountPerPage: action.payload
+        amountPerPage: action.payload,
+        page: 1
       };
     default:
       return state;

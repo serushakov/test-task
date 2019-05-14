@@ -45,7 +45,9 @@ const PackageList: React.FC<ReduxProps> = ({
     });
   }, [page, loadPackagesRequest, amountPerPage]);
 
-  const totalPages = totalPackages ? totalPackages / amountPerPage : 0;
+  const totalPages = Math.ceil(
+    totalPackages ? totalPackages / amountPerPage : 0
+  );
 
   const renderPackageLink = (packageName: string) => {
     return (
