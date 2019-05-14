@@ -5,6 +5,7 @@
   "proxy": "http://localhost:3000",
   "dependencies": {
     "koa": "^2.7.0",
+    "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
     "lodash": "^4.17.11",
     "normalize.css": "^8.0.1",
@@ -23,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build-server": "tsc --project tsconfig.node.json",
-    "start-server": "node ./server-build/app.js",
+    "start-server": "node ./server-build/server/app.js",
     "dev-server": "concurrently -x -k 'yarn build-server -w' 'nodemon ./server-build/server/app.js mockdata'"
   },
   "eslintConfig": {
