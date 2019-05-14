@@ -1,0 +1,37 @@
+version: "3"
+services:
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    image: sushakov/dpkg-status-webapp-server
+    restart: unless-stopped
+    command: yarn start-server
+    networks:
+      - gateway
+  client:
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    image: sushakov/dpkg-status-webapp-client
+    volumes:
+      - static:/usr/src/app/build
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    depends_on:
+      - client
+      - server
+    image: sushakov/dpkg-status-webapp-nginx
+    volumes:
+      - static:/usr/share/nginx/html
+    networks:
+      - gateway
+    command: nginx -g 'daemon off;'
+    ports:
+      - "80:80"
+volumes:
+  static:
+networks:
+  gateway: {}
