@@ -13,3 +13,5 @@ RUN yarn
 
 # Building server
 RUN yarn build-server
+
+CMD [ "yarn", "start-server" ]

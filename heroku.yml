@@ -3,7 +3,3 @@ build:
   docker:
     client: src/Dockerfile
     backend: server/Dockerfile
-# Run a command on each release
-run:
-  web: nginx -g 'daemon off;'
-  backend: yarn start-server

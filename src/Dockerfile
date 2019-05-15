@@ -10,6 +10,9 @@ COPY common ./common
 COPY public ./public
 COPY tsconfig.json .
 
+# Installing dependencies
+RUN yarn
+
 # Building the app
 RUN yarn build
 
@@ -23,3 +26,5 @@ WORKDIR /etc/nginx
 
 # Copying configs for nginx
 COPY ./nginx .
+
+CMD nginx -g 'daemon off;'
