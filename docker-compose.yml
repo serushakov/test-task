@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     command: yarn start-server
     volumes:
-      - node_modules:/usr/src/app/node_modules
+      - yarn_cache:/yarn
     networks:
       - gateway
   client:
@@ -18,15 +18,17 @@ services:
     image: sushakov/dpkg-status-webapp-client
     restart: unless-stopped
     volumes:
-      - node_modules:/usr/src/app/node_modules
+      - yarn_cache:/yarn
     depends_on:
       - server
     ports:
       - "80:80"
     command: nginx -g 'daemon off;'
+    networks:
+      - gateway
 
 volumes:
-  node_modules:
+  yarn_cache:
 
 networks:
   gateway: {}
