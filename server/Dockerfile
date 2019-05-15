@@ -2,7 +2,6 @@ FROM node:10
 
 WORKDIR /usr/src/app
 
-# Copying all files needed for server build
 COPY package.json ./
 COPY yarn.lock ./
 COPY server ./server

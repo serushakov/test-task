@@ -7,6 +7,8 @@ services:
     image: sushakov/dpkg-status-webapp-server
     restart: unless-stopped
     command: yarn start-server
+    volumes:
+      - node_modules:/usr/src/app/node_modules
     networks:
       - gateway
   client:
@@ -14,24 +16,17 @@ services:
       context: .
       dockerfile: ./src/Dockerfile
     image: sushakov/dpkg-status-webapp-client
+    restart: unless-stopped
     volumes:
-      - static:/usr/src/app/build
-  nginx:
-    build:
-      context: .
-      dockerfile: ./nginx/Dockerfile
+      - node_modules:/usr/src/app/node_modules
     depends_on:
-      - client
       - server
-    image: sushakov/dpkg-status-webapp-nginx
-    volumes:
-      - static:/usr/share/nginx/html
-    networks:
-      - gateway
-    command: nginx -g 'daemon off;'
     ports:
       - "80:80"
+    command: nginx -g 'daemon off;'
+
 volumes:
-  static:
+  node_modules:
+
 networks:
   gateway: {}
