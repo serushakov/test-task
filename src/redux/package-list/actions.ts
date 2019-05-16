@@ -36,7 +36,12 @@ export const loadPackagesRequest = (
   } catch (e) {
     dispatch({
       type: LOAD_PACKAGES_FAILURE,
-      payload: e
+      payload:
+        typeof e === "string"
+          ? e
+          : e instanceof Error
+          ? e.message
+          : "Unknown error"
     });
   }
 };

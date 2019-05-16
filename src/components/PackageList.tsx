@@ -36,7 +36,8 @@ const PackageList: React.FC<ReduxProps> = ({
   setPage,
   isLoading,
   amountPerPage,
-  setAmountPerPage
+  setAmountPerPage,
+  error
 }) => {
   useEffect(() => {
     loadPackagesRequest({
@@ -107,9 +108,15 @@ const PackageList: React.FC<ReduxProps> = ({
         </div>
         <button onClick={nextPage}>&#8594;</button>
       </div>
-      <div className="PackageList-list">
-        {packages && packages.map(renderPackageLink)}
-      </div>
+      {error ? (
+        <span className="PackageList-error">
+          Failed loading packages: {error}
+        </span>
+      ) : (
+        <div className="PackageList-list">
+          {packages && packages.map(renderPackageLink)}
+        </div>
+      )}
     </div>
   );
 };
