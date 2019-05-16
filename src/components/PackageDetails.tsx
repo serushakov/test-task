@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
-import { PackageData, Dependency } from "../../common/types";
+import { PackageData, Alternatives } from "../../common/types";
 
 import { fetchPackage } from "../api";
 
@@ -36,29 +36,26 @@ const PackageDetails: React.FC<RouteComponentProps<RouteParams>> = ({
     );
   };
 
-  const renderDependencies = (dependencies: Array<Dependency>) => {
+  const renderDependencies = (dependencies: Array<Alternatives>) => {
     return (
       <ul className="PackageDetails-list">
-        {dependencies.map((dependency, index) => {
-          const listToRender = [
-            dependency.installed,
-            ...(dependency.alternatives || [])
-          ].filter(d => !!d);
-
+        {dependencies.map((alternatives, index) => {
+          const namesOfAlternatives = Object.keys(alternatives);
           return (
             <li key={index}>
               <span>
-                {listToRender.map((dep, index) =>
-                  dependency.installed === dep ? (
-                    <Link key={dep} to={`/package/${dependency.installed}`}>
-                      {dependency.installed}
-                    </Link>
-                  ) : index > 0 ? (
-                    ` or ${dep}`
-                  ) : (
-                    dep
-                  )
-                )}
+                {namesOfAlternatives.map((name, index) => (
+                  <>
+                    <span>{index > 0 && " or "}</span>
+                    {alternatives[name].installed ? (
+                      <Link key={name} to={`/package/${name}`}>
+                        {name}
+                      </Link>
+                    ) : (
+                      name
+                    )}
+                  </>
+                ))}
               </span>
             </li>
           );

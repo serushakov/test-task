@@ -5,7 +5,7 @@ import {
   PackageData,
   PackageList,
   RequiredDescriptors,
-  Dependency
+  Alternatives
 } from "../common/types";
 import { withNewLine } from "./utils";
 
@@ -81,45 +81,47 @@ class Parser {
       if (!pkg.rawDependencies) return;
 
       this.packageList[packageName].dependencies = pkg.rawDependencies.map(
-        dep => {
-          if (!dep.includes(" | "))
-            return {
-              installed: dep
-            };
-
-          const alternatives = dep.split(" | ");
-
-          console.log(alternatives);
-
-          const installed = alternatives.reduce((foundName, alternative) => {
-            if (foundName) return foundName;
-
-            if (this.packageList[alternative]) {
-              return alternative;
-            }
-          }, "");
-
-          return {
-            installed,
-            alternatives: _.without(alternatives, installed)
-          };
-        }
+        this.parseAlternatives
       );
 
       delete this.packageList[packageName].rawDependencies;
     });
+
+    packages.forEach(packageName => {
+      const pkg = this.packageList[packageName];
+
+      if (!pkg.rawDependencies) return;
+    });
   }
 
-  private addDependant = name => ({ installed }: Dependency) => {
-    const dependencyPackage = this.packageList[installed];
+  private parseAlternatives = (rawString: string): Alternatives => {
+    const alternatives = {};
 
-    if (!dependencyPackage) return;
+    rawString.split(" | ").forEach(alt => {
+      alternatives[alt] = {
+        installed: !!this.packageList[alt]
+      };
+    });
 
-    if (!dependencyPackage.dependants) {
-      this.packageList[installed].dependants = [];
-    }
+    return alternatives;
+  };
 
-    this.packageList[installed].dependants.push(name);
+  private addDependant = dependantName => (alternatives: Alternatives) => {
+    const alternativeNames = Object.keys(alternatives);
+
+    alternativeNames.forEach(name => {
+      if (!alternatives[name].installed) return;
+
+      const dependencyPackage = this.packageList[name];
+
+      if (!dependencyPackage) return;
+
+      if (!dependencyPackage.dependants) {
+        this.packageList[name].dependants = [];
+      }
+
+      this.packageList[name].dependants.push(dependantName);
+    });
   };
 
   private lineParser = (line: string) => {
