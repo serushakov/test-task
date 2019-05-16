@@ -1,13 +1,22 @@
 import { Interface, createInterface } from "readline";
 import { createReadStream } from "fs";
 import * as _ from "lodash";
-import { PackageData, PackageList, RequiredDescriptors } from "../common/types";
+import {
+  PackageData,
+  PackageList,
+  RequiredDescriptors,
+  Dependency
+} from "../common/types";
 import { withNewLine } from "./utils";
 
 const KEY_VALUE_DIVIDER = ": ";
 
-interface PartialPackageList {
-  [name: string]: Partial<PackageData>;
+interface IntermediatePackageData extends Partial<PackageData> {
+  rawDependencies?: Array<string>;
+}
+
+interface IntermediatePackageList {
+  [name: string]: IntermediatePackageData;
 }
 
 class Parser {
@@ -17,7 +26,7 @@ class Parser {
   private prevKey = "";
   private prevValue = "";
 
-  private packageList: PartialPackageList;
+  private packageList: IntermediatePackageList;
 
   constructor(filePath: string) {
     if (!filePath) {
@@ -44,6 +53,7 @@ class Parser {
     return new Promise(resolve => {
       this.readLineInterface.on("close", () => {
         this.savePreviousKeyValue();
+        this.calculateAlternatives();
         this.calculateDependants();
         resolve(this.packageList as PackageList);
       });
@@ -62,16 +72,54 @@ class Parser {
     });
   }
 
-  private addDependant = name => dependency => {
-    const dependencyPackage = this.packageList[dependency];
+  private calculateAlternatives() {
+    const packages = Object.keys(this.packageList);
+
+    packages.forEach(packageName => {
+      const pkg = this.packageList[packageName];
+
+      if (!pkg.rawDependencies) return;
+
+      this.packageList[packageName].dependencies = pkg.rawDependencies.map(
+        dep => {
+          if (!dep.includes(" | "))
+            return {
+              installed: dep
+            };
+
+          const alternatives = dep.split(" | ");
+
+          console.log(alternatives);
+
+          const installed = alternatives.reduce((foundName, alternative) => {
+            if (foundName) return foundName;
+
+            if (this.packageList[alternative]) {
+              return alternative;
+            }
+          }, "");
+
+          return {
+            installed,
+            alternatives: _.without(alternatives, installed)
+          };
+        }
+      );
+
+      delete this.packageList[packageName].rawDependencies;
+    });
+  }
+
+  private addDependant = name => ({ installed }: Dependency) => {
+    const dependencyPackage = this.packageList[installed];
 
     if (!dependencyPackage) return;
 
     if (!dependencyPackage.dependants) {
-      this.packageList[dependency].dependants = [];
+      this.packageList[installed].dependants = [];
     }
 
-    this.packageList[dependency].dependants.push(name);
+    this.packageList[installed].dependants.push(name);
   };
 
   private lineParser = (line: string) => {
@@ -111,7 +159,7 @@ class Parser {
       case RequiredDescriptors.Depends:
         this.packageList[this.currentPackage] = {
           ...this.packageList[this.currentPackage],
-          dependencies: this.parseDependencies(this.prevValue)
+          rawDependencies: this.parseDependencies(this.prevValue)
         };
         break;
       case RequiredDescriptors.Version:
@@ -132,13 +180,12 @@ class Parser {
 
   private parseDependencies = (line: string) => {
     const dependencies = line.split(", ").map(this.removeVersionFromDependency);
+
     return _.uniq(dependencies);
   };
 
-  private removeVersionFromDependency = (dependency: string) => {
-    const [dependencyName] = dependency.split(" ");
-    return dependencyName;
-  };
+  private removeVersionFromDependency = (dependency: string) =>
+    dependency.replace(/ *\([^)]*\)/g, "").trim();
 }
 
 export default Parser;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
-import { PackageData } from "../../common/types";
+import { PackageData, Dependency } from "../../common/types";
 
 import { fetchPackage } from "../api";
 
@@ -24,15 +24,48 @@ const PackageDetails: React.FC<RouteComponentProps<RouteParams>> = ({
     setError(null);
   }, [packageName]);
 
-  const renderPackageList = (list: Array<string>) => (
-    <ul className="PackageDetails-list">
-      {list.map(packageName => (
-        <li key={packageName}>
-          <Link to={`/package/${packageName}`}>{packageName}</Link>
-        </li>
-      ))}
-    </ul>
-  );
+  const renderPackageList = (list: Array<string>) => {
+    return (
+      <ul className="PackageDetails-list">
+        {list.map(packageName => (
+          <li key={packageName}>
+            <Link to={`/package/${packageName}`}>{packageName}</Link>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const renderDependencies = (dependencies: Array<Dependency>) => {
+    return (
+      <ul className="PackageDetails-list">
+        {dependencies.map((dependency, index) => {
+          const listToRender = [
+            dependency.installed,
+            ...(dependency.alternatives || [])
+          ].filter(d => !!d);
+
+          return (
+            <li key={index}>
+              <span>
+                {listToRender.map((dep, index) =>
+                  dependency.installed === dep ? (
+                    <Link key={dep} to={`/package/${dependency.installed}`}>
+                      {dependency.installed}
+                    </Link>
+                  ) : index > 0 ? (
+                    ` or ${dep}`
+                  ) : (
+                    dep
+                  )
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
 
   return (
     <div>
@@ -56,16 +89,16 @@ const PackageDetails: React.FC<RouteComponentProps<RouteParams>> = ({
             {packageData.description}
           </div>
 
-          <div>
+          <div className="PackageDetails-dependencies">
             <h3>Dependencies</h3>
             {packageData.dependencies ? (
-              renderPackageList(packageData.dependencies)
+              renderDependencies(packageData.dependencies)
             ) : (
               <span>None!</span>
             )}
           </div>
 
-          <div>
+          <div className="PackageDetails-dependants">
             <h3>Dependants</h3>
             {packageData.dependants ? (
               renderPackageList(packageData.dependants)

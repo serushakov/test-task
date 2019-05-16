@@ -6,10 +6,15 @@ export enum RequiredDescriptors {
 }
 
 export type PackageData = {
-  dependencies?: Array<string>;
+  dependencies?: Array<Dependency>;
   dependants?: Array<string>;
   description: string;
   version: string;
+};
+
+export type Dependency = {
+  installed?: string;
+  alternatives?: Array<string>;
 };
 
 export type PackageList = {
