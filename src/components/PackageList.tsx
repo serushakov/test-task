@@ -77,7 +77,7 @@ const PackageList: React.FC<ReduxProps> = ({
     setAmountPerPage(Number(e.target.value));
   };
 
-  if (isLoading || !packages || !totalPackages) {
+  if ((isLoading && !packages) || !totalPackages) {
     return <span>Loading...</span>;
   }
 
