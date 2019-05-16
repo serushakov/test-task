@@ -13,11 +13,11 @@ export const reportMemoryUsage = () => {
 export const getFilePath = () => {
   const filePathFromArgs = process.argv[2];
 
-  if (!filePathFromArgs) {
-    return "/var/lib/dpkg/status";
-  } else if (existsSync(hostStatusFilePath)) {
+  if (existsSync(hostStatusFilePath)) {
     console.log("Found host dpkg status file!");
     return hostStatusFilePath;
+  } else if (!filePathFromArgs) {
+    return "/var/lib/dpkg/status";
   } else {
     return path.join(__dirname, "../../", process.argv[2]);
   }
