@@ -8,8 +8,6 @@ COPY server ./server
 COPY common ./common
 COPY tsconfig.node.json .
 
-RUN yarn config set cache-folder /yarn
-
 # Installing dependencies
 RUN yarn
 

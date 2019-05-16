@@ -8,7 +8,8 @@ services:
     restart: unless-stopped
     command: yarn start-server
     volumes:
-      - yarn_cache:/yarn
+      - node_modules:/usr/src/app/node_modules
+      - /var/lib/dpkg/status:/usr/src/app/host-status-file
     networks:
       - gateway
   client:
@@ -18,7 +19,7 @@ services:
     image: sushakov/dpkg-status-webapp-client
     restart: unless-stopped
     volumes:
-      - yarn_cache:/yarn
+      - node_modules:/usr/src/app/node_modules
     depends_on:
       - server
     ports:
@@ -28,7 +29,7 @@ services:
       - gateway
 
 volumes:
-  yarn_cache:
+  node_modules:
 
 networks:
   gateway: {}

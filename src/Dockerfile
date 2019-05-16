@@ -10,7 +10,7 @@ COPY common ./common
 COPY public ./public
 COPY tsconfig.json .
 
-RUN yarn config set cache-folder /yarn
+RUN ls -la
 
 RUN yarn
 # Building the app
