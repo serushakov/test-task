@@ -9,8 +9,7 @@ COPY src ./src
 COPY common ./common
 COPY public ./public
 COPY tsconfig.json .
-
-RUN ls -la
+COPY node_modules .
 
 RUN yarn
 # Building the app

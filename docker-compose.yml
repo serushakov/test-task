@@ -8,7 +8,6 @@ services:
     restart: unless-stopped
     command: yarn start-server
     volumes:
-      - node_modules:/usr/src/app/node_modules
       - /var/lib/dpkg/status:/usr/src/app/host-status-file
     networks:
       - gateway
@@ -18,8 +17,6 @@ services:
       dockerfile: ./src/Dockerfile
     image: sushakov/dpkg-status-webapp-client
     restart: unless-stopped
-    volumes:
-      - node_modules:/usr/src/app/node_modules
     depends_on:
       - server
     ports:
@@ -27,9 +24,6 @@ services:
     command: nginx -g 'daemon off;'
     networks:
       - gateway
-
-volumes:
-  node_modules:
 
 networks:
   gateway: {}

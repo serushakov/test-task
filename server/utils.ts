@@ -16,6 +16,7 @@ export const getFilePath = () => {
   if (!filePathFromArgs) {
     return "/var/lib/dpkg/status";
   } else if (existsSync(hostStatusFilePath)) {
+    console.log("Found host dpkg status file!");
     return hostStatusFilePath;
   } else {
     return path.join(__dirname, "../../", process.argv[2]);
